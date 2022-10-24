@@ -1,20 +1,23 @@
-import "@aws-amplify/ui-react/styles.css"
+import "@aws-amplify/ui-react/styles.css";
 
-import { useForm } from "react-hook-form"
+import { useForm } from "react-hook-form";
 
-import { Authenticator } from "@aws-amplify/ui-react"
-import { API, Geo, Storage, graphqlOperation } from "aws-amplify"
-import { createContact } from "../src/graphql/mutations"
-import { contactsByName } from "../src/graphql/queries"
-import * as subscriptions from "../src/graphql/subscriptions"
+import { Authenticator } from "@aws-amplify/ui-react";
+import { API, Geo, Storage, graphqlOperation } from "aws-amplify";
+import { createContact } from "../src/graphql/mutations";
+import { contactsByName } from "../src/graphql/queries";
+import * as subscriptions from "../src/graphql/subscriptions";
 
-import { Amplify, Auth } from "aws-amplify"
-import awsExports from "../src/aws-exports"
-Amplify.configure({ ...awsExports, ssr: true })
+import { Amplify, Auth } from "aws-amplify";
+import awsExports from "../src/aws-exports";
+Amplify.configure({ ...awsExports, ssr: true });
 
-import { Fragment, useEffect, useState } from "react"
-import { Dialog, Menu, Transition } from "@headlessui/react"
-import { ChevronDownIcon, MagnifyingGlassIcon } from "@heroicons/react/20/solid"
+import { Fragment, useEffect, useState } from "react";
+import { Dialog, Menu, Transition } from "@headlessui/react";
+import {
+  ChevronDownIcon,
+  MagnifyingGlassIcon,
+} from "@heroicons/react/20/solid";
 import {
   ArchiveBoxIcon,
   Bars3Icon,
@@ -25,14 +28,14 @@ import {
   PencilSquareIcon,
   UserCircleIcon,
   XMarkIcon,
-} from "@heroicons/react/24/outline"
+} from "@heroicons/react/24/outline";
 
 const user = {
   name: "Whitney Francis",
   email: "whitney.francis@example.com",
   imageUrl:
     "https://images.unsplash.com/photo-1517365830460-955ce3ccd263?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80",
-}
+};
 const navigation = [
   {
     name: "Inboxes",
@@ -45,7 +48,7 @@ const navigation = [
   },
   { name: "Reporting", href: "#", children: [] },
   { name: "Settings", href: "#", children: [] },
-]
+];
 const sidebarNavigation = [
   { name: "Open", href: "#", icon: InboxIcon, current: true },
   { name: "Archive", href: "#", icon: ArchiveBoxIcon, current: false },
@@ -53,29 +56,30 @@ const sidebarNavigation = [
   { name: "Flagged", href: "#", icon: FlagIcon, current: false },
   { name: "Spam", href: "#", icon: NoSymbolIcon, current: false },
   { name: "Drafts", href: "#", icon: PencilSquareIcon, current: false },
-]
+];
 const userNavigation = [
   { name: "Your Profile", href: "#" },
   { name: "Sign out", href: "#" },
-]
+];
 
 function classNames(...classes) {
-  return classes.filter(Boolean).join(" ")
+  return classes.filter(Boolean).join(" ");
 }
 
 export default function Home() {
   const {
     register,
     handleSubmit,
+    reset,
     watch,
     formState: { errors },
-  } = useForm()
-  const [contacts, setContacts] = useState([])
-  const [mobileMenuOpen, setMobileMenuOpen] = useState(false)
+  } = useForm();
+  const [contacts, setContacts] = useState([]);
+  const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
 
   useEffect(() => {
     fetchContacts();
-  }, [])
+  }, []);
 
   function fetchContacts() {
     API.graphql({
@@ -85,8 +89,8 @@ export default function Home() {
         sortDirection: "DESC",
       },
     }).then((data) => {
-      setContacts(data.data.contactsByName.items)
-    })
+      setContacts(data.data.contactsByName.items);
+    });
   }
 
   async function onSubmit(data) {
@@ -98,8 +102,9 @@ export default function Home() {
           ...data,
         },
       },
-    })
+    });
     fetchContacts();
+    reset();
   }
 
   function handleCreateContact() {}
@@ -632,5 +637,5 @@ export default function Home() {
         </div>
       </div>
     </Authenticator>
-  )
+  );
 }

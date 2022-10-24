@@ -1,0 +1,11 @@
+{
+  "AppSyncApiName": "contacts",
+  "DynamoDBBillingMode": "PAY_PER_REQUEST",
+  "DynamoDBEnableServerSideEncryption": false,
+  "AuthCognitoUserPoolId": {
+    "Fn::GetAtt": [
+      "authcontacts8f39a8ff",
+      "Outputs.UserPoolId"
+    ]
+  }
+}

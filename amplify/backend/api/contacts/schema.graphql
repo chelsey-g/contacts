@@ -1,0 +1,15 @@
+type Contact @model @auth(rules: [{allow: owner}]) {
+  id: ID!
+  type: String! @index(name: "contactsByName", queryField: "contactsByName", sortKeyFields: ["name"])
+  name: String
+  phone_mobile: String
+  phone_home: String
+  phone_work: String
+  email: String
+  address: String
+  city: String
+  state: String
+  zip: String
+  country: String
+  notes: String
+}

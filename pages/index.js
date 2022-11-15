@@ -3,7 +3,11 @@ import { useForm } from "react-hook-form";
 
 import { Authenticator } from "@aws-amplify/ui-react";
 import { API, Geo, Storage, graphqlOperation } from "aws-amplify";
-import { createContact, deleteContact } from "../src/graphql/mutations";
+import {
+  createContact,
+  deleteContact,
+  updateContact,
+} from "../src/graphql/mutations";
 import { getContact, contactsByName } from "../src/graphql/queries";
 import * as subscriptions from "../src/graphql/subscriptions";
 import Link from "next/link";
@@ -123,6 +127,28 @@ export default function Home() {
     }
   };
 
+  async function handleUpdateContact(data) {
+    delete data.createdAt;
+    delete data.updatedAt;
+    delete data.owner;
+    try {
+      API.graphql({
+        query: updateContact,
+        variables: {
+          input: {
+            type: "Contact",
+            ...data,
+          },
+        },
+      }).then((data) => {
+        fetchContacts();
+        setShowForm(false);
+      });
+    } catch (e) {
+      console.log(e);
+    }
+  }
+
   function handleSearchChange(e) {
     e.preventDefault();
     setSearchInput(e.target.value);
@@ -159,11 +185,6 @@ export default function Home() {
     });
   }
 
-  // function handleNavContactClick() {
-  //   setCurrentContact(data.data.getContact);
-  //   setShowForm(true);
-  // }
-
   function handleCreateContact() {
     setCurrentContact(null);
     setShowForm(true);
@@ -179,11 +200,6 @@ export default function Home() {
       state: "",
       zip: "",
     });
-  }
-
-  function handleDeleteContactClick() {
-    setShowForm(false);
-    setCurrentContact(null);
   }
 
   function handlePhoneValidation(event) {
@@ -710,6 +726,7 @@ export default function Home() {
                         disabled={Boolean(phoneEntryError)}
                         type="submit"
                         className="ml-3 inline-flex justify-center rounded-md border border-transparent bg-indigo-600 py-2 px-4 text-sm font-medium text-white shadow-sm hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2"
+                        onClick={handleSubmit(handleUpdateContact)}
                       >
                         Save
                       </button>

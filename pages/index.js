@@ -3,7 +3,11 @@ import { useForm } from "react-hook-form";
 
 import { Authenticator } from "@aws-amplify/ui-react";
 import { API, Geo, Storage, graphqlOperation } from "aws-amplify";
-import { createContact, deleteContact } from "../src/graphql/mutations";
+import {
+  createContact,
+  deleteContact,
+  updateContact,
+} from "../src/graphql/mutations";
 import { getContact, contactsByName } from "../src/graphql/queries";
 import * as subscriptions from "../src/graphql/subscriptions";
 import Link from "next/link";
@@ -83,6 +87,7 @@ export default function Home() {
   const [currentContact, setCurrentContact] = useState(null);
   const [showForm, setShowForm] = useState(false);
   const [phoneEntryError, setPhoneEntryError] = useState(null);
+  const [nameEntryError, setNameEntryError] = useState(null);
   const [showDeleteModal, setShowDeleteModal] = useState(false);
   const [searchInput, setSearchInput] = useState("");
   const [searchHidden, setSearchHidden] = useState(true);
@@ -123,6 +128,28 @@ export default function Home() {
     }
   };
 
+  async function handleUpdateContact(data) {
+    delete data.createdAt;
+    delete data.updatedAt;
+    delete data.owner;
+    try {
+      API.graphql({
+        query: updateContact,
+        variables: {
+          input: {
+            type: "Contact",
+            ...data,
+          },
+        },
+      }).then((data) => {
+        fetchContacts();
+        setShowForm(false);
+      });
+    } catch (e) {
+      console.log(e);
+    }
+  }
+
   function handleSearchChange(e) {
     e.preventDefault();
     setSearchInput(e.target.value);
@@ -159,11 +186,6 @@ export default function Home() {
     });
   }
 
-  // function handleNavContactClick() {
-  //   setCurrentContact(data.data.getContact);
-  //   setShowForm(true);
-  // }
-
   function handleCreateContact() {
     setCurrentContact(null);
     setShowForm(true);
@@ -181,16 +203,20 @@ export default function Home() {
     });
   }
 
-  function handleDeleteContactClick() {
-    setShowForm(false);
-    setCurrentContact(null);
-  }
-
   function handlePhoneValidation(event) {
     const value = event.target.value;
     const isInvalid = value.length < 10;
     setPhoneEntryError(isInvalid ? "Phone number must be 10 digits" : null);
   }
+
+  function handleContactNameDuplicate(event) {
+    const nameValue = event.target.value;
+    const isNameInvalid = contacts.some(
+      (contact) => contact.name === nameValue
+    );
+    setNameEntryError(isNameInvalid ? "This name already exists." : null);
+  }
+
   console.log(showForm);
 
   console.log("currentContact", currentContact);
@@ -551,7 +577,11 @@ export default function Home() {
                                 {...register("name")}
                                 type="text"
                                 className="block w-full min-w-0 flex-1 rounded-md border-gray-300 focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm"
+                                onChange={handleContactNameDuplicate}
                               />
+                              <div style={{ color: "red" }}>
+                                {nameEntryError}
+                              </div>
                             </div>
                           </div>
                         </div>
@@ -710,6 +740,7 @@ export default function Home() {
                         disabled={Boolean(phoneEntryError)}
                         type="submit"
                         className="ml-3 inline-flex justify-center rounded-md border border-transparent bg-indigo-600 py-2 px-4 text-sm font-medium text-white shadow-sm hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2"
+                        onClick={handleSubmit(handleUpdateContact)}
                       >
                         Save
                       </button>

@@ -87,6 +87,7 @@ export default function Home() {
   const [currentContact, setCurrentContact] = useState(null);
   const [showForm, setShowForm] = useState(false);
   const [phoneEntryError, setPhoneEntryError] = useState(null);
+  const [nameEntryError, setNameEntryError] = useState(null);
   const [showDeleteModal, setShowDeleteModal] = useState(false);
   const [searchInput, setSearchInput] = useState("");
   const [searchHidden, setSearchHidden] = useState(true);
@@ -207,6 +208,15 @@ export default function Home() {
     const isInvalid = value.length < 10;
     setPhoneEntryError(isInvalid ? "Phone number must be 10 digits" : null);
   }
+
+  function handleContactNameDuplicate(event) {
+    const nameValue = event.target.value;
+    const isNameInvalid = contacts.some(
+      (contact) => contact.name === nameValue
+    );
+    setNameEntryError(isNameInvalid ? "This name already exists." : null);
+  }
+
   console.log(showForm);
 
   console.log("currentContact", currentContact);
@@ -567,7 +577,11 @@ export default function Home() {
                                 {...register("name")}
                                 type="text"
                                 className="block w-full min-w-0 flex-1 rounded-md border-gray-300 focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm"
+                                onChange={handleContactNameDuplicate}
                               />
+                              <div style={{ color: "red" }}>
+                                {nameEntryError}
+                              </div>
                             </div>
                           </div>
                         </div>

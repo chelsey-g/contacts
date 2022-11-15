@@ -155,6 +155,7 @@ export default function Home() {
       fetchContacts();
       setCurrentContact(data.data.createContact);
       reset();
+      setShowForm(false);
     });
   }
 

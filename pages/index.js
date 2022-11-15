@@ -835,8 +835,18 @@ export default function Home() {
             {/* Secondary column (hidden on smaller screens) */}
             <aside className="hidden lg:order-first lg:block lg:flex-shrink-0">
               <div className="relative flex h-full w-96 flex-col overflow-y-auto border-r border-gray-200 bg-gray-100">
-                <button onClick={handleCreateContact}>Create Contact</button>
-                <button onClick={handleSearchChange}>Search Contact</button>
+                <button
+                  className="inline-flex w-full justify-center rounded-md border border-transparent bg-indigo-500 px-4 py-2 text-base font-medium text-white shadow-sm hover:bg-indigo-600 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 sm:ml-3 sm:w-auto sm:text-sm"
+                  onClick={handleCreateContact}
+                >
+                  Create Contact
+                </button>
+                <button
+                  className="inline-flex w-full justify-center rounded-md border border-transparent bg-indigo-500 px-4 py-2 text-base font-medium text-white shadow-sm hover:bg-indigo-600 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 sm:ml-3 sm:w-auto sm:text-sm"
+                  onClick={handleSearchChange}
+                >
+                  Search Contact
+                </button>
                 {!searchHidden && (
                   <div
                     className="relative z-10"

@@ -1,6 +1,60 @@
 /* eslint-disable */
 // this is an auto generated file. This will be overwritten
 
+export const searchContacts = /* GraphQL */ `
+  query SearchContacts(
+    $filter: SearchableContactFilterInput
+    $sort: [SearchableContactSortInput]
+    $limit: Int
+    $nextToken: String
+    $from: Int
+    $aggregates: [SearchableContactAggregationInput]
+  ) {
+    searchContacts(
+      filter: $filter
+      sort: $sort
+      limit: $limit
+      nextToken: $nextToken
+      from: $from
+      aggregates: $aggregates
+    ) {
+      items {
+        id
+        type
+        name
+        phone_mobile
+        phone_home
+        phone_work
+        email
+        address
+        city
+        state
+        zip
+        country
+        notes
+        createdAt
+        updatedAt
+        owner
+      }
+      nextToken
+      total
+      aggregateItems {
+        name
+        result {
+          ... on SearchableAggregateScalarResult {
+            value
+          }
+          ... on SearchableAggregateBucketResult {
+            buckets {
+              key
+              doc_count
+            }
+          }
+        }
+      }
+    }
+  }
+`;
 export const getContact = /* GraphQL */ `
   query GetContact($id: ID!) {
     getContact(id: $id) {

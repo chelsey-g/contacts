@@ -1,4 +1,4 @@
-type Contact @model @auth(rules: [{allow: owner}]) {
+type Contact @model @searchable @auth(rules: [{allow: owner}]) {
   id: ID!
   type: String! @index(name: "contactsByName", queryField: "contactsByName", sortKeyFields: ["name"])
   name: String

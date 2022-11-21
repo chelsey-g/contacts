@@ -40,25 +40,25 @@ const user = {
     "https://images.unsplash.com/photo-1517365830460-955ce3ccd263?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80",
 };
 const navigation = [
-  {
-    name: "Inboxes",
-    href: "#",
-    children: [
-      { name: "Technical Support", href: "#" },
-      { name: "Sales", href: "#" },
-      { name: "General", href: "#" },
-    ],
-  },
-  { name: "Reporting", href: "#", children: [] },
+  // {
+  //   name: "Inboxes",
+  //   href: "#",
+  //   children: [
+  //     { name: "Technical Support", href: "#" },
+  //     { name: "Sales", href: "#" },
+  //     { name: "General", href: "#" },
+  //   ],
+  // },
+  // { name: "Reporting", href: "#", children: [] },
   { name: "Settings", href: "#", children: [] },
 ];
 const sidebarNavigation = [
-  { name: "Open", href: "#", icon: InboxIcon, current: true },
-  { name: "Archive", href: "#", icon: ArchiveBoxIcon, current: false },
-  { name: "Customers", href: "#", icon: UserCircleIcon, current: false },
-  { name: "Flagged", href: "#", icon: FlagIcon, current: false },
-  { name: "Spam", href: "#", icon: NoSymbolIcon, current: false },
-  { name: "Drafts", href: "#", icon: PencilSquareIcon, current: false },
+  // { name: "Open", href: "#", icon: InboxIcon, current: true },
+  // { name: "Archive", href: "#", icon: ArchiveBoxIcon, current: false },
+  // { name: "Customers", href: "#", icon: UserCircleIcon, current: false },
+  // { name: "Flagged", href: "#", icon: FlagIcon, current: false },
+  // { name: "Spam", href: "#", icon: NoSymbolIcon, current: false },
+  // { name: "Drafts", href: "#", icon: PencilSquareIcon, current: false },
 ];
 const userNavigation = [
   { name: "Your Profile", href: "#" },
@@ -251,9 +251,9 @@ export default function Home() {
               <select
                 id="inbox-select"
                 className="rounded-md border-0 bg-none pl-3 pr-8 text-base font-medium text-gray-900 focus:ring-2 focus:ring-indigo-600"
-                defaultValue={
-                  sidebarNavigation.find((item) => item.current).name
-                }
+                // defaultValue={
+                //   // sidebarNavigation.find((item) => item.current).name
+                // }
               >
                 {sidebarNavigation.map((item) => (
                   <option key={item.name}>{item.name}</option>
@@ -301,12 +301,12 @@ export default function Home() {
             </div>
             <div className="ml-10 flex flex-shrink-0 items-center space-x-10 pr-4">
               <nav aria-label="Global" className="flex space-x-10">
-                <a href="#" className="text-sm font-medium text-gray-900">
+                {/* <a href="#" className="text-sm font-medium text-gray-900">
                   Inboxes
                 </a>
                 <a href="#" className="text-sm font-medium text-gray-900">
                   Reporting
-                </a>
+                </a> */}
                 <a href="#" className="text-sm font-medium text-gray-900">
                   Settings
                 </a>

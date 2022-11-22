@@ -54,11 +54,6 @@ const navigation = [
 ];
 const sidebarNavigation = [
   // { name: "Open", href: "#", icon: InboxIcon, current: true },
-  // { name: "Archive", href: "#", icon: ArchiveBoxIcon, current: false },
-  // { name: "Customers", href: "#", icon: UserCircleIcon, current: false },
-  // { name: "Flagged", href: "#", icon: FlagIcon, current: false },
-  // { name: "Spam", href: "#", icon: NoSymbolIcon, current: false },
-  // { name: "Drafts", href: "#", icon: PencilSquareIcon, current: false },
 ];
 const userNavigation = [
   { name: "Your Profile", href: "#" },
@@ -89,24 +84,23 @@ export default function Home() {
   const [phoneEntryError, setPhoneEntryError] = useState(null);
   const [nameEntryError, setNameEntryError] = useState(null);
   const [showDeleteModal, setShowDeleteModal] = useState(false);
-  const [searchInput, setSearchInput] = useState("");
-  const [searchHidden, setSearchHidden] = useState(true);
+  const [search, setSearch] = useState("");
 
-  useEffect(() => {
-    fetchContacts();
-  }, []);
+  // useEffect(() => {
+  //   fetchContacts();
+  // }, []);
 
-  function fetchContacts() {
-    API.graphql({
-      query: contactsByName,
-      variables: {
-        type: "Contact",
-        sortDirection: "DESC",
-      },
-    }).then((data) => {
-      setContacts(data.data.contactsByName.items);
-    });
-  }
+  // function fetchContacts() {
+  //   API.graphql({
+  //     query: contactsByName,
+  //     variables: {
+  //       type: "Contact",
+  //       sortDirection: "DESC",
+  //     },
+  //   }).then((data) => {
+  //     setContacts(data.data.contactsByName.items);
+  //   });
+  // }
 
   const handleDeleteContact = async (id) => {
     try {

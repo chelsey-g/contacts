@@ -17,6 +17,9 @@
       },
       "api": {
         "contacts": {}
+      },
+      "storage": {
+        "s3caaee96f": {}
       }
     }
   }

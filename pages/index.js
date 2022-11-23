@@ -69,24 +69,25 @@ function classNames(...classes) {
 }
 
 export default function Home() {
-  const { register, handleSubmit, reset, watch, formState } = useForm({
-    defaultValues: {
-      name: "",
-      phone_mobile: "",
-      phone_home: "",
-      email: "",
-      address: "",
-      city: "",
-      state: "",
-      zip: "",
-    },
-  });
+  const { register, handleSubmit, reset, watch, formState, setValue } = useForm(
+    {
+      defaultValues: {
+        name: "",
+        phone_mobile: "",
+        phone_home: "",
+        email: "",
+        address: "",
+        city: "",
+        state: "",
+        zip: "",
+      },
+    }
+  );
   const [contacts, setContacts] = useState([]);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [currentContact, setCurrentContact] = useState(null);
   const [showForm, setShowForm] = useState(false);
   const [phoneEntryError, setPhoneEntryError] = useState(null);
-  const [nameEntryError, setNameEntryError] = useState(null);
   const [showDeleteModal, setShowDeleteModal] = useState(false);
   const [search, setSearch] = useState("");
 
@@ -205,14 +206,6 @@ export default function Home() {
     const value = event.target.value;
     const isInvalid = value.length < 10;
     setPhoneEntryError(isInvalid ? "Phone number must be 10 digits" : null);
-  }
-
-  function handleContactNameDuplicate(event) {
-    const nameValue = event.target.value;
-    const isNameInvalid = contacts.some(
-      (contact) => contact.name === nameValue
-    );
-    setNameEntryError(isNameInvalid ? "This name already exists." : null);
   }
 
   console.log(showForm);
@@ -576,11 +569,14 @@ export default function Home() {
                                 {...register("name")}
                                 type="text"
                                 className="block w-full min-w-0 flex-1 rounded-md border-gray-300 focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm"
-                                onChange={handleContactNameDuplicate}
+                                onChange={(event) =>
+                                  setValue(
+                                    "name",
+                                    event.target.value.charAt(0).toUpperCase() +
+                                      event.target.value.slice(1)
+                                  )
+                                }
                               />
-                              <div style={{ color: "red" }}>
-                                {nameEntryError}
-                              </div>
                             </div>
                           </div>
                         </div>

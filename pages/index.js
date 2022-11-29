@@ -156,34 +156,34 @@ export default function Home() {
     }
   }
 
-  function handleContactClick(id) {
-    API.graphql({
+  async function handleContactClick(id) {
+    let data = await API.graphql({
       query: getContact,
       variables: {
         id: id,
       },
-    }).then((data) => {
-      setCurrentContact(data.data.getContact);
-      reset(data.data.getContact);
-      setShowForm(true);
     });
+    setCurrentContact(data.data.getContact);
+    const photoURL = await Storage.get(data.data.getContact.id);
+    setContactPhoto(photoURL);
+    reset(data.data.getContact);
+    setShowForm(true);
   }
 
-  function onSubmit(data) {
-    API.graphql({
+  async function onSubmit(formData) {
+    let data = await API.graphql({
       query: createContact,
       variables: {
         input: {
           type: "Contact",
-          ...data,
+          ...formData,
         },
       },
-    }).then((data) => {
-      setContacts([...contacts, data.data.createContact]);
-      setCurrentContact(data.data.createContact);
-      reset();
-      setShowForm(false);
     });
+    setContacts([...contacts, data.data.createContact]);
+    setCurrentContact(data.data.createContact);
+    reset();
+    setShowForm(false);
   }
 
   function handleCreateContact() {
@@ -212,16 +212,12 @@ export default function Home() {
   async function uploadPhoto(e) {
     const file = e.target.files[0];
     try {
-      await Storage.put(currentContact.id, file, {
-        contentType: "image/png",
-      });
+      const result = await Storage.put(currentContact.id, file);
+      const photoURL = await Storage.get(currentContact.id);
+      setContactPhoto(photoURL);
     } catch (err) {
-      console.log("Error uploading file: ", err);
+      console.log(err);
     }
-
-    const url = await Storage.get(currentContact.id);
-    setContactPhoto({ ...currentContact, photo: url });
-    // const result = await Storage.get(currentContact.id, { download: true });
   }
 
   console.log(showForm);
@@ -666,6 +662,7 @@ export default function Home() {
                           >
                             Photo
                           </label>
+                          <img src={contactPhoto} width="50" height="50" />
                           <div className="mt-1 sm:col-span-2 sm:mt-0">
                             <div className="flex items-center">
                               <span className="h-12 w-12 overflow-hidden rounded-full bg-gray-100">
@@ -673,9 +670,7 @@ export default function Home() {
                                   className="h-full w-full text-gray-300"
                                   fill="currentColor"
                                   viewBox="0 0 24 24"
-                                >
-                                  <path d="M24 20.993V24H0v-2.996A14.977 14.977 0 0112.004 15c4.904 0 9.26 2.354 11.996 5.993zM16.002 8.999a4 4 0 11-8 0 4 4 0 018 0z" />
-                                </svg>
+                                ></svg>
                               </span>
                               <input
                                 name="photo"

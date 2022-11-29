@@ -157,35 +157,33 @@ export default function Home() {
   }
 
   async function handleContactClick(id) {
-    const photoURL = await Storage.get(currentContact.id);
-    API.graphql({
+    let data = await API.graphql({
       query: getContact,
       variables: {
         id: id,
       },
-    }).then((data) => {
-      setCurrentContact(data.data.getContact);
-      reset(data.data.getContact);
-      setShowForm(true);
-      setContactPhoto(photoURL);
     });
+    setCurrentContact(data.data.getContact);
+    const photoURL = await Storage.get(data.data.getContact.id);
+    setContactPhoto(photoURL);
+    reset(data.data.getContact);
+    setShowForm(true);
   }
 
-  function onSubmit(data) {
-    API.graphql({
+  async function onSubmit(formData) {
+    let data = await API.graphql({
       query: createContact,
       variables: {
         input: {
           type: "Contact",
-          ...data,
+          ...formData,
         },
       },
-    }).then((data) => {
-      setContacts([...contacts, data.data.createContact]);
-      setCurrentContact(data.data.createContact);
-      reset();
-      setShowForm(false);
     });
+    setContacts([...contacts, data.data.createContact]);
+    setCurrentContact(data.data.createContact);
+    reset();
+    setShowForm(false);
   }
 
   function handleCreateContact() {
@@ -215,11 +213,11 @@ export default function Home() {
     const file = e.target.files[0];
     try {
       const result = await Storage.put(currentContact.id, file);
+      const photoURL = await Storage.get(currentContact.id);
+      setContactPhoto(photoURL);
     } catch (err) {
       console.log(err);
     }
-    const photoURL = await Storage.get(currentContact.id);
-    setContactPhoto(photoURL);
   }
 
   console.log(showForm);

@@ -36,7 +36,6 @@ import {
   UserCircleIcon,
   XMarkIcon,
 } from "@heroicons/react/24/outline";
-import { data } from "autoprefixer";
 
 const user = {
   name: "Whitney Francis",
@@ -215,9 +214,7 @@ export default function Home() {
   async function uploadPhoto(e) {
     const file = e.target.files[0];
     try {
-      const result = await Storage.put(currentContact.id, file, {
-        contentType: "image/png",
-      });
+      const result = await Storage.put(currentContact.id, file);
     } catch (err) {
       console.log(err);
     }

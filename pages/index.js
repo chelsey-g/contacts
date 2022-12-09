@@ -3,6 +3,7 @@ import { useForm } from "react-hook-form";
 
 import { Authenticator } from "@aws-amplify/ui-react";
 import ContactEdit from "./ContactEdit.js";
+import ContactView from "./ContactView.js";
 import { API, Geo, Storage, graphqlOperation } from "aws-amplify";
 import { getContact, searchContacts } from "../src/graphql/queries";
 // import * as subscriptions from "../src/graphql/subscriptions";
@@ -70,7 +71,8 @@ export default function Home(props) {
   const [search, setSearch] = useState("");
   const [currentContact, setCurrentContact] = useState(null);
   const [contactPhoto, setContactPhoto] = useState(null);
-  const [showForm, setShowForm] = useState(false);
+  const [showEditForm, setShowEditForm] = useState(false);
+  const [showViewForm, setShowViewForm] = useState(false);
 
   useEffect(() => {
     async function doSearch() {
@@ -85,20 +87,6 @@ export default function Home(props) {
     }
     doSearch();
   }, [search]);
-
-  // async function handleContactClick(id) {
-  //   let data = await API.graphql({
-  //     query: getContact,
-  //     variables: {
-  //       id: id,
-  //     },
-  //   });
-  //   setCurrentContact(data.data.getContact);
-  //   const photoURL = await Storage.get(data.data.getContact.id);
-  //   setContactPhoto(photoURL);
-  //   reset(data.data.getContact);
-  //   setShowForm(true);
-  // }
 
   return (
     <Authenticator>
@@ -419,13 +407,15 @@ export default function Home(props) {
           </nav>
           {/* Main area */}
           <main className="min-w-0 flex-1 border-t border-gray-200 lg:flex">
-            {showForm && (
-              <ContactEdit
+            {currentContact ? (
+              <ContactView
                 key={currentContact?.id}
                 contact={currentContact}
-                onClose={() => setShowForm(false)}
+                onClick={() => setShowEditForm(true)}
               />
-            )}
+            ) : null}
+
+            {showEditForm ? <ContactEdit /> : null}
 
             {/* Secondary column (hidden on smaller screens) */}
             <aside className="lg:order-first lg:block lg:flex-shrink-0">
@@ -434,7 +424,7 @@ export default function Home(props) {
                   className="inline-flex w-full justify-center rounded-md border border-transparent bg-indigo-500 px-4 py-2 text-base font-medium text-white shadow-sm hover:bg-indigo-600 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 sm:ml-3 sm:w-auto sm:text-sm"
                   onClick={() => {
                     setCurrentContact(null);
-                    setShowForm(true);
+                    setShowEditForm(true);
                   }}
                 >
                   Create Contact
@@ -442,10 +432,10 @@ export default function Home(props) {
 
                 {contacts.map((contact) => (
                   <div
-                    key={contact.name}
+                    key={contact.id}
                     className="p-5 border-2 divide-solid divide-y-2 divide-gray-400"
                     onClick={() => {
-                      setShowForm(true);
+                      setShowEditForm(false);
                       setCurrentContact(contact);
                     }}
                   >

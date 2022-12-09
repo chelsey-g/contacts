@@ -35,10 +35,11 @@ export default function ContactEdit(props) {
   const [contacts, setContacts] = useState([]);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [currentContact, setCurrentContact] = useState(null);
-  const [showForm, setShowForm] = useState(false);
+  const [showEditForm, setShowEditForm] = useState(false);
   const [phoneEntryError, setPhoneEntryError] = useState(null);
   const [showDeleteModal, setShowDeleteModal] = useState(false);
   const [contactPhoto, setContactPhoto] = useState(null);
+  const [showViewForm, setShowViewForm] = useState(false);
 
   const handleDeleteContact = async (id) => {
     try {
@@ -57,7 +58,7 @@ export default function ContactEdit(props) {
           )
         );
         setShowDeleteModal(!showDeleteModal);
-        setShowForm(false);
+        setShowEditForm(false);
       });
     } catch (e) {
       console.log(e);
@@ -83,11 +84,15 @@ export default function ContactEdit(props) {
         );
         newContact.push(data.data.updateContact);
         setContacts(newContact);
-        setShowForm(false);
+        setShowEditForm(false);
       });
     } catch (e) {
       console.log(e);
     }
+  }
+
+  function refreshPage() {
+    window.location.reload(false);
   }
 
   async function onSubmit(formData) {
@@ -103,24 +108,8 @@ export default function ContactEdit(props) {
     setContacts([...contacts, data.data.createContact]);
     setCurrentContact(data.data.createContact);
     reset();
-    setShowForm(false);
-  }
-
-  function handleCreateContact() {
-    setCurrentContact(null);
-    setShowForm(true);
-    // @TODO fix this shit
-    reset({
-      name: "",
-      phone_mobile: "",
-      phone_home: "",
-      phone_work: "",
-      email: "",
-      address: "",
-      city: "",
-      state: "",
-      zip: "",
-    });
+    setShowEditForm(false);
+    refreshPage();
   }
 
   function handlePhoneValidation(event) {
@@ -147,6 +136,7 @@ export default function ContactEdit(props) {
     >
       <form
         onSubmit={handleSubmit(onSubmit)}
+        key={currentContact?.id}
         className="space-y-8 divide-y divide-gray-200"
       >
         <div className="space-y-8 divide-y divide-gray-200 sm:space-y-5">
@@ -347,6 +337,7 @@ export default function ContactEdit(props) {
                 disabled={Boolean(phoneEntryError)}
                 type="submit"
                 className="ml-3 inline-flex justify-center rounded-md border border-transparent bg-indigo-600 py-2 px-4 text-sm font-medium text-white shadow-sm hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2"
+                // onClick={refreshPage}
               >
                 Save
               </button>

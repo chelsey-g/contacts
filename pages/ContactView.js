@@ -1,47 +1,12 @@
 import "@aws-amplify/ui-react/styles.css";
-import ContactEdit from "./ContactEdit";
 import propTypes from "prop-types";
-import { useForm } from "react-hook-form";
-import {
-  createContact,
-  deleteContact,
-  updateContact,
-} from "../src/graphql/mutations";
-// import { API, Geo, Storage, graphqlOperation } from "aws-amplify";
-import { Fragment, useEffect, useState } from "react";
-// import {
-//   getContact,
-//   contactsByName,
-//   searchContacts,
-// } from "../src/graphql/queries";
-import { Amplify, Auth } from "aws-amplify";
+import { Amplify } from "aws-amplify";
+import { useState } from "react";
 import awsExports from "../src/aws-exports";
 Amplify.configure({ ...awsExports, ssr: true });
 
 export default function ContactView(props) {
-  const { register, handleSubmit, reset, watch, formState, setValue } = useForm(
-    {
-      defaultValues: {
-        name: props?.contact?.name,
-        phone_mobile: props?.contact?.phone_mobile,
-        phone_home: props?.contact?.phone_home,
-        email: props?.contact?.email,
-        address: props?.contact?.address,
-        city: "",
-        state: "",
-        zip: "",
-      },
-    }
-  );
-  const [contacts, setContacts] = useState([]);
-  const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
-  const [currentContact, setCurrentContact] = useState(null);
-  const [showEditForm, setShowEditForm] = useState(false);
-  const [phoneEntryError, setPhoneEntryError] = useState(null);
-  const [showDeleteModal, setShowDeleteModal] = useState(false);
-  const [contactPhoto, setContactPhoto] = useState(null);
-  const [showViewForm, setShowViewForm] = useState(false);
-  const [showUpdateForm, setShowUpdateForm] = useState(false);
+  console.log("FUCK");
 
   return (
     <div className="place-content-center">
@@ -50,6 +15,9 @@ export default function ContactView(props) {
           className="h-132 w-full object-cover lg:h-80"
           src="https://wallpaperaccess.com/full/2667331.jpg"
           alt="cover photo"
+          // onHover={() => {
+          //   console.log("hover");
+          // }}
         />
       </div>
       <div className="mx-auto max-w-5xl px-4 sm:px-6 lg:px-8">
@@ -83,8 +51,8 @@ export default function ContactView(props) {
 
               <button
                 type="button"
-                className="inline-flex justify-center rounded-md border border-gray-300 bg-red-600 px-4 py-2 text-sm font-medium text-white shadow-sm hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-pink-500 focus:ring-offset-2"
-                onClick={() => setShowEditForm(true)}
+                className="inline-flex justify-center rounded-md border border-gray-300 bg-red-600 px-4 py-2 text-sm font-medium text-white shadow-sm hover:bg-red focus:outline-none focus:ring-2 focus:ring-pink-500 focus:ring-offset-2"
+                onClick={props.onEdit}
               >
                 <span>Edit</span>
               </button>
@@ -99,43 +67,50 @@ export default function ContactView(props) {
       </div>
 
       {/* contact body */}
-      <div className="mt-5 border-t border-gray-200">
-        <dl className="text-sm">
-          <div className="py-4 sm:grid sm:grid-cols-3 sm:gap-4 sm:py-5">
-            <dt className="text-sm font-medium text-gray-500">Full name</dt>
-            <dd className="mt-1 flex text-sm text-gray-900 sm:col-span-2 sm:mt-0">
-              <span className="flex-grow">{props.contact.name}</span>
-            </dd>
-          </div>
-          <div className="py-4 sm:grid sm:grid-cols-3 sm:gap-4 sm:py-5">
-            <dt className="text-sm font-medium text-gray-500">Mobile Phone</dt>
-            <dd className="mt-1 flex text-sm text-gray-900 sm:col-span-2 sm:mt-0">
-              <span className="flex-grow">{props.contact.phone_mobile}</span>
-            </dd>
-          </div>
-          <div className="py-4 sm:grid sm:grid-cols-3 sm:gap-4 sm:py-5">
-            <dt className="text-sm font-medium text-gray-500">Work Phone</dt>
-            <dd className="mt-1 flex text-sm text-gray-900 sm:col-span-2 sm:mt-0">
-              <span className="flex-grow">{props.contact.phone_work}</span>
-            </dd>
-          </div>
-          <div className="py-4 sm:grid sm:grid-cols-3 sm:gap-4 sm:py-5">
-            <dt className="text-sm font-medium text-gray-500">Email Address</dt>
-            <dd className="mt-1 flex text-sm text-gray-900 sm:col-span-2 sm:mt-0">
-              <span className="flex-grow">
-                **needs to be added to form queries**
-              </span>
-            </dd>
-          </div>
-          <div className="py-4 sm:grid sm:grid-cols-3 sm:gap-4 sm:py-5">
-            <dt className="text-sm font-medium text-gray-500">Notes</dt>
-            <dd className="mt-1 flex text-sm text-gray-900 sm:col-span-2 sm:mt-0">
-              <span className="flex-grow">
-                **needs to be added to form queries**
-              </span>
-            </dd>
-          </div>
-        </dl>
+      <div className="overflow-hidden bg-white shadow sm:rounded-lg">
+        <div className="px-4 py-5 sm:px-6">
+          <div className="mt-5 border-t border-gray-200"></div>
+          <dl className="text-sm">
+            <div className="py-4 sm:grid sm:grid-cols-3 sm:gap-4 sm:py-5">
+              <dt className="text-sm font-medium text-gray-500">Full name</dt>
+              <dd className="mt-1 flex text-sm text-gray-900 sm:col-span-2 sm:mt-0">
+                <span className="flex-grow">{props.contact.name}</span>
+              </dd>
+            </div>
+            <div className="py-4 sm:grid sm:grid-cols-3 sm:gap-4 sm:py-5">
+              <dt className="text-sm font-medium text-gray-500">
+                Mobile Phone
+              </dt>
+              <dd className="mt-1 flex text-sm text-gray-900 sm:col-span-2 sm:mt-0">
+                <span className="flex-grow">{props.contact.phone_mobile}</span>
+              </dd>
+            </div>
+            <div className="py-4 sm:grid sm:grid-cols-3 sm:gap-4 sm:py-5">
+              <dt className="text-sm font-medium text-gray-500">Work Phone</dt>
+              <dd className="mt-1 flex text-sm text-gray-900 sm:col-span-2 sm:mt-0">
+                <span className="flex-grow">{props.contact.phone_work}</span>
+              </dd>
+            </div>
+            <div className="py-4 sm:grid sm:grid-cols-3 sm:gap-4 sm:py-5">
+              <dt className="text-sm font-medium text-gray-500">
+                Email Address
+              </dt>
+              <dd className="mt-1 flex text-sm text-gray-900 sm:col-span-2 sm:mt-0">
+                <span className="flex-grow">
+                  **needs to be added to form queries**
+                </span>
+              </dd>
+            </div>
+            <div className="py-4 sm:grid sm:grid-cols-3 sm:gap-4 sm:py-5">
+              <dt className="text-sm font-medium text-gray-500">Notes</dt>
+              <dd className="mt-1 flex text-sm text-gray-900 sm:col-span-2 sm:mt-0">
+                <span className="flex-grow">
+                  **needs to be added to form queries**
+                </span>
+              </dd>
+            </div>
+          </dl>
+        </div>
       </div>
     </div>
   );

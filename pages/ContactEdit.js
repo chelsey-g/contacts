@@ -6,13 +6,9 @@ import {
   updateContact,
 } from "../src/graphql/mutations";
 import { API, Geo, Storage, graphqlOperation } from "aws-amplify";
-import { Fragment, useEffect, useState } from "react";
-import {
-  getContact,
-  contactsByName,
-  searchContacts,
-} from "../src/graphql/queries";
-import { Amplify, Auth } from "aws-amplify";
+import { useState } from "react";
+import { getContact } from "../src/graphql/queries";
+import { Amplify } from "aws-amplify";
 import awsExports from "../src/aws-exports";
 Amplify.configure({ ...awsExports, ssr: true });
 
@@ -33,13 +29,12 @@ export default function ContactEdit(props) {
     }
   );
   const [contacts, setContacts] = useState([]);
-  const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [currentContact, setCurrentContact] = useState(null);
-  const [showEditForm, setShowEditForm] = useState(false);
   const [phoneEntryError, setPhoneEntryError] = useState(null);
   const [showDeleteModal, setShowDeleteModal] = useState(false);
   const [contactPhoto, setContactPhoto] = useState(null);
-  const [showViewForm, setShowViewForm] = useState(false);
+  const [contactCoverPhoto, setContactCoverPhoto] = useState(null);
+  const [isEditing, setIsEditing] = useState(false);
 
   const handleDeleteContact = async (id) => {
     try {
@@ -58,7 +53,7 @@ export default function ContactEdit(props) {
           )
         );
         setShowDeleteModal(!showDeleteModal);
-        setShowEditForm(false);
+        setIsEditing(false);
       });
     } catch (e) {
       console.log(e);
@@ -84,7 +79,7 @@ export default function ContactEdit(props) {
         );
         newContact.push(data.data.updateContact);
         setContacts(newContact);
-        setShowEditForm(false);
+        setIsEditing(false);
       });
     } catch (e) {
       console.log(e);
@@ -108,7 +103,7 @@ export default function ContactEdit(props) {
     setContacts([...contacts, data.data.createContact]);
     setCurrentContact(data.data.createContact);
     reset();
-    setShowEditForm(false);
+    setIsEditing(false);
     refreshPage();
   }
 
@@ -124,6 +119,17 @@ export default function ContactEdit(props) {
       const result = await Storage.put(currentContact.id, file);
       const photoURL = await Storage.get(currentContact.id);
       setContactPhoto(photoURL);
+    } catch (err) {
+      console.log(err);
+    }
+  }
+
+  async function uploadCoverPhoto(e) {
+    const file = e.target.files[0];
+    try {
+      const coverPhotoResult = await Storage.put(currentContact.id, file);
+      const coverPhotoURL = await Storage.get(currentContact.id);
+      setContactCoverPhoto(coverPhotoURL);
     } catch (err) {
       console.log(err);
     }
@@ -293,9 +299,9 @@ export default function ContactEdit(props) {
                           <span>Upload a file</span>
                           <input
                             id="file-upload"
-                            name="file-upload"
+                            name="cover-photo"
                             type="file"
-                            className="sr-only"
+                            onChange={uploadCoverPhoto}
                           />
                         </label>
                         <p className="pl-1">or drag and drop</p>

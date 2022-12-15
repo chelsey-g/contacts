@@ -17,6 +17,7 @@ export default function ContactEdit(props) {
   const { register, handleSubmit, reset, watch, formState, setValue } = useForm(
     {
       defaultValues: {
+        id: props?.contact?.id,
         name: props?.contact?.name,
         phone_mobile: props?.contact?.phone_mobile,
         phone_home: props?.contact?.phone_home,
@@ -29,7 +30,6 @@ export default function ContactEdit(props) {
     }
   );
   const [contacts, setContacts] = useState([]);
-  const [currentContact, setCurrentContact] = useState(null);
   const [phoneEntryError, setPhoneEntryError] = useState(null);
   const [showDeleteModal, setShowDeleteModal] = useState(false);
   const [contactPhoto, setContactPhoto] = useState(null);
@@ -53,7 +53,7 @@ export default function ContactEdit(props) {
           )
         );
         setShowDeleteModal(!showDeleteModal);
-        setIsEditing(false);
+        props.onDelete(data.data.deleteContact);
       });
     } catch (e) {
       console.log(e);
@@ -74,20 +74,11 @@ export default function ContactEdit(props) {
           },
         },
       }).then((data) => {
-        let newContact = contacts.filter(
-          (contact) => data.data.updateContact.id !== contact.id
-        );
-        newContact.push(data.data.updateContact);
-        setContacts(newContact);
-        setIsEditing(false);
+        props.onSave(data.data.updateContact);
       });
     } catch (e) {
       console.log(e);
     }
-  }
-
-  function refreshPage() {
-    window.location.reload(false);
   }
 
   async function onSubmit(formData) {
@@ -100,11 +91,7 @@ export default function ContactEdit(props) {
         },
       },
     });
-    setContacts([...contacts, data.data.createContact]);
-    setCurrentContact(data.data.createContact);
-    reset();
-    setIsEditing(false);
-    refreshPage();
+    props.onSave(data.data.createContact);
   }
 
   function handlePhoneValidation(event) {
@@ -116,8 +103,8 @@ export default function ContactEdit(props) {
   async function uploadPhoto(e) {
     const file = e.target.files[0];
     try {
-      const result = await Storage.put(currentContact.id, file);
-      const photoURL = await Storage.get(currentContact.id);
+      const result = await Storage.put(props.contact.id, file);
+      const photoURL = await Storage.get(props.contact.id);
       setContactPhoto(photoURL);
     } catch (err) {
       console.log(err);
@@ -127,8 +114,8 @@ export default function ContactEdit(props) {
   async function uploadCoverPhoto(e) {
     const file = e.target.files[0];
     try {
-      const coverPhotoResult = await Storage.put(currentContact.id, file);
-      const coverPhotoURL = await Storage.get(currentContact.id);
+      const coverPhotoResult = await Storage.put(props.contact.id, file);
+      const coverPhotoURL = await Storage.get(props.contact.id);
       setContactCoverPhoto(coverPhotoURL);
     } catch (err) {
       console.log(err);
@@ -142,7 +129,7 @@ export default function ContactEdit(props) {
     >
       <form
         onSubmit={handleSubmit(onSubmit)}
-        key={currentContact?.id}
+        key={props.contact?.id}
         className="space-y-8 divide-y divide-gray-200"
       >
         <div className="space-y-8 divide-y divide-gray-200 sm:space-y-5">
@@ -327,7 +314,7 @@ export default function ContactEdit(props) {
               Cancel
             </button>
 
-            {currentContact?.id && (
+            {props.contact?.id && (
               <button
                 disabled={Boolean(phoneEntryError)}
                 type="submit"
@@ -338,18 +325,17 @@ export default function ContactEdit(props) {
               </button>
             )}
 
-            {!currentContact?.id && (
+            {!props.contact?.id && (
               <button
                 disabled={Boolean(phoneEntryError)}
                 type="submit"
                 className="ml-3 inline-flex justify-center rounded-md border border-transparent bg-indigo-600 py-2 px-4 text-sm font-medium text-white shadow-sm hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2"
-                // onClick={refreshPage}
               >
                 Save
               </button>
             )}
 
-            {currentContact?.id && (
+            {props.contact?.id && (
               <button
                 type="button"
                 className="ml-3 inline-flex justify-center rounded-md border border-transparent bg-red-600 py-2 px-4 text-sm font-medium text-white shadow-sm hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2"
@@ -410,7 +396,7 @@ export default function ContactEdit(props) {
                       <div className="bg-gray-50 px-4 py-3 sm:flex sm:flex-row-reverse sm:px-6">
                         <button
                           type="button"
-                          onClick={() => handleDeleteContact(currentContact.id)}
+                          onClick={() => handleDeleteContact(props.contact.id)}
                           className="inline-flex w-full justify-center rounded-md border border-transparent bg-red-600 px-4 py-2 text-base font-medium text-white shadow-sm hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-red-500 focus:ring-offset-2 sm:ml-3 sm:w-auto sm:text-sm"
                         >
                           Delete Contact

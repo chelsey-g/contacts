@@ -413,7 +413,32 @@ export default function Home(props) {
                 onEdit={() => setIsEditing(true)}
               />
             ) : null}
-            {isEditing ? <ContactEdit contact={currentContact} /> : null}
+            {isEditing ? (
+              <ContactEdit
+                contact={currentContact}
+                onSave={(contact) => {
+                  setCurrentContact(contact);
+                  setIsEditing(false);
+                  let newContacts = contacts.filter((c) => contact.id !== c.id);
+                  newContacts.push(contact);
+                  setContacts(
+                    newContacts.sort((a, b) => a.name.localeCompare(b.name))
+                  );
+                }}
+                onDelete={(contact) => {
+                  setCurrentContact(null);
+                  setIsEditing(false);
+                  let newContacts = contacts.filter((c) => contact.id !== c.id);
+                  setContacts(
+                    newContacts.sort((a, b) => a.name.localeCompare(b.name))
+                  );
+                }}
+                onClose={() => {
+                  setCurrentContact(null);
+                  setIsEditing(false);
+                }}
+              />
+            ) : null}
             {/* Secondary column (hidden on smaller screens) */}
             <aside className="lg:order-first lg:block lg:flex-shrink-0">
               <div className="relative flex h-full w-96 flex-col overflow-y-auto border-r border-gray-200 bg-gray-100">

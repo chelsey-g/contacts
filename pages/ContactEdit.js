@@ -30,11 +30,10 @@ export default function ContactEdit(props) {
     }
   );
   const [contacts, setContacts] = useState([]);
-  const [phoneEntryError, setPhoneEntryError] = useState(null);
+  const [phoneEntryError, setPhoneEntryError] = useState(false);
   const [showDeleteModal, setShowDeleteModal] = useState(false);
   const [contactPhoto, setContactPhoto] = useState(null);
   const [contactCoverPhoto, setContactCoverPhoto] = useState(null);
-  const [isEditing, setIsEditing] = useState(false);
 
   const handleDeleteContact = async (id) => {
     try {
@@ -114,8 +113,11 @@ export default function ContactEdit(props) {
   async function uploadCoverPhoto(e) {
     const file = e.target.files[0];
     try {
-      const coverPhotoResult = await Storage.put(props.contact.id, file);
-      const coverPhotoURL = await Storage.get(props.contact.id);
+      const coverPhotoResult = await Storage.put(
+        `${props.contact.id}-cover`,
+        file
+      );
+      const coverPhotoURL = await Storage.get(`${props.contact.id}-cover`);
       setContactCoverPhoto(coverPhotoURL);
     } catch (err) {
       console.log(err);

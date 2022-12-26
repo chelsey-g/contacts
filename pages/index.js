@@ -68,7 +68,6 @@ export default function Home(props) {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [search, setSearch] = useState("");
   const [currentContact, setCurrentContact] = useState(null);
-  const [contactPhoto, setContactPhoto] = useState(null);
   const [isEditing, setIsEditing] = useState(false);
 
   useEffect(() => {

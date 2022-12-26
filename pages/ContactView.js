@@ -1,31 +1,46 @@
 import "@aws-amplify/ui-react/styles.css";
 import propTypes from "prop-types";
 import { Amplify } from "aws-amplify";
-import { useState } from "react";
+import { useState, useEffect } from "react";
+import { Storage } from "aws-amplify";
 import awsExports from "../src/aws-exports";
 Amplify.configure({ ...awsExports, ssr: true });
 
 export default function ContactView(props) {
-  console.log("FUCK");
+  const [coverPhoto, setCoverPhoto] = useState("");
+  const [contactPhoto, setContactPhoto] = useState("");
+  const [isContactPhoto, setIsContactPhoto] = useState(false);
+  const [isCoverPhoto, setIsCoverPhoto] = useState(false);
+
+  useEffect(() => {
+    async function getCoverPhoto() {
+      const coverPhoto = await Storage.get(`${props.contact.id}-cover`);
+      setCoverPhoto(coverPhoto);
+    }
+    async function getContactPhoto() {
+      const contactPhoto = await Storage.get(props.contact.id);
+      setContactPhoto(contactPhoto);
+    }
+    getCoverPhoto();
+    getContactPhoto();
+  }, [props.contact.id]);
 
   return (
     <div className="place-content-center">
       <div>
         <img
           className="h-132 w-full object-cover lg:h-80"
-          src="https://wallpaperaccess.com/full/2667331.jpg"
+          src={coverPhoto}
           alt="cover photo"
-          // onHover={() => {
-          //   console.log("hover");
-          // }}
         />
       </div>
+
       <div className="mx-auto max-w-5xl px-4 sm:px-6 lg:px-8">
         <div className="-mt-12 sm:-mt-16 sm:flex sm:items-end sm:space-x-5">
           <div className="flex">
             <img
               className="h-24 w-24 rounded-full ring-4 ring-white sm:h-32 sm:w-32"
-              src="https://chelseygowac.com/_next/image?url=%2Fme.jpg&w=3840&q=75"
+              src={contactPhoto}
               alt="profile picture"
             />
           </div>
@@ -46,7 +61,9 @@ export default function ContactView(props) {
                 type="button"
                 className="inline-flex justify-center rounded-md border border-gray-300 bg-white px-4 py-2 text-sm font-medium text-gray-700 shadow-sm hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-pink-500 focus:ring-offset-2"
               >
-                <span>Call</span>
+                <span>
+                  <a href="tel:{props.contact.phone_mobile}">Call</a>
+                </span>
               </button>
 
               <button

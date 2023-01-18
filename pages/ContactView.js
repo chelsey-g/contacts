@@ -9,8 +9,6 @@ Amplify.configure({ ...awsExports, ssr: true });
 export default function ContactView(props) {
   const [coverPhoto, setCoverPhoto] = useState("");
   const [contactPhoto, setContactPhoto] = useState("");
-  const [isContactPhoto, setIsContactPhoto] = useState(false);
-  const [isCoverPhoto, setIsCoverPhoto] = useState(false);
 
   useEffect(() => {
     async function getCoverPhoto() {
@@ -24,6 +22,20 @@ export default function ContactView(props) {
     getCoverPhoto();
     getContactPhoto();
   }, [props.contact.id]);
+
+  if (coverPhoto) {
+    <img
+      className="h-132 w-full object-cover lg:h-80"
+      src={coverPhoto}
+      alt="cover photo"
+    />;
+  } else {
+    <img
+      className="h-132 w-full object-cover lg:h-80"
+      src="https://tinyurl.com/jwfn9pcr"
+      alt="cover photo"
+    />;
+  }
 
   return (
     <div className="place-content-center">

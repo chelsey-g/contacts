@@ -23,19 +23,19 @@ export default function ContactView(props) {
     getContactPhoto();
   }, [props.contact.id]);
 
-  if (coverPhoto) {
-    <img
-      className="h-132 w-full object-cover lg:h-80"
-      src={coverPhoto}
-      alt="cover photo"
-    />;
-  } else {
-    <img
-      className="h-132 w-full object-cover lg:h-80"
-      src="https://tinyurl.com/jwfn9pcr"
-      alt="cover photo"
-    />;
-  }
+  // if (coverPhoto) {
+  //   <img
+  //     className="h-132 w-full object-cover lg:h-80"
+  //     src={coverPhoto}
+  //     alt="cover photo"
+  //   />;
+  // } else {
+  //   <img
+  //     className="h-132 w-full object-cover lg:h-80"
+  //     src="https://tinyurl.com/jwfn9pcr"
+  //     alt="cover photo"
+  //   />;
+  // }
 
   return (
     <div className="place-content-center">
